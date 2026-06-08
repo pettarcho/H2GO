@@ -3,7 +3,6 @@
 NETWORK MODULE
 Smart Hydration Base
 ========================================
-
 Responsibilities:
 - Connect to WiFi
 - Create JSON payload
@@ -29,37 +28,27 @@ bool wifiConnected = false;
 void connectWiFi()
 {
     Serial.println("Connecting to WiFi...");
-
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
     int attempts = 0;
-
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);
-
         Serial.print(".");
-
         attempts++;
-
         if (attempts > 20)
         {
             Serial.println();
             Serial.println("WiFi connection failed");
-
             wifiConnected = false;
             return;
         }
     }
-
     wifiConnected = true;
-
     Serial.println();
     Serial.println("WiFi connected!");
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
 }
-
 // ========================================
 // CONNECTION CHECK
 // ========================================
@@ -68,11 +57,9 @@ bool isNetworkConnected()
 {
     return WiFi.status() == WL_CONNECTED;
 }
-
 // ========================================
 // CREATE JSON PAYLOAD
 // ========================================
-
 String createHydrationPayload(
     int userId,
     float currentWeight,
