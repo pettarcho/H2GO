@@ -1,0 +1,6 @@
+@H2GO.API_HostAddress = http://localhost:5285
+
+GET {{H2GO.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

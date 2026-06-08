@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "O4YowPnczSQ=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\kokom\\Desktop\\VS Code stuff\\H2GO\\backend\\H2GO.API\\H2GO.API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kokom\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.8\\microsoft.aspnetcore.openapi.10.0.8.nupkg.sha512",
+    "C:\\Users\\kokom\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
