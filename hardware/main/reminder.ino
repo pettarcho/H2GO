@@ -2,11 +2,14 @@
 
 #define BUZZER_PIN 27
 
+// NOTE: currently set to 20 s for testing purposes.
+// Change to 1800000UL (30 min) before production deployment.
+
 unsigned long lastReminderTime = 0;
 const unsigned long REMINDER_INTERVAL = 20000UL; // 30 minutes in ms
 
 // Goal options: 1L = 1000ml, 2L = 2000ml, 3L = 3000ml
-// This will be set by the web app via your teammate
+// This will be set by the web app
 float goalML = 2000.0; // default 2L
 
 void reminderSetup() {
