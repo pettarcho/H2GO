@@ -1,4 +1,6 @@
+using H2GO.API.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace H2GO.API.Controllers;
 
@@ -7,6 +9,12 @@ namespace H2GO.API.Controllers;
 
 public class AuthController : ControllerBase
 {
+    private readonly H2GODbContext _context;
+
+    public AuthController(H2GODbContext context)
+    {
+        _context = context;
+    }
     [HttpPost("register")]
     public IActionResult Register()
     {

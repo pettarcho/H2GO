@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using H2GO.API.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace H2GO.API.Controllers;
 
@@ -7,6 +9,12 @@ namespace H2GO.API.Controllers;
 
 public class DashboardController : ControllerBase
 {
+    private readonly H2GODbContext _context;
+
+    public DashboardController(H2GODbContext context)
+    {
+        _context = context;
+    }
     [HttpGet]
     public IActionResult GetDashboard()
     {
