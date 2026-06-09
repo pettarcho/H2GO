@@ -14,43 +14,38 @@ Responsibilities:
 ========================================
 */
 #include <Arduino.h>
-// ========================================
-// CONFIGURATION – adjust before flashing
-// ========================================
+
 static const int USER_ID = 1;
 
-// How often (ms) to read the scale and update hydration state.
 static const unsigned long SENSOR_INTERVAL = 2000UL;
-// How often (ms) to POST data to the backend.
-static const unsigned long SEND_INTERVAL = 60000UL;
+static const unsigned long SEND_INTERVAL   = 60000UL;
 
-// ========================================
-// STATE
-// ========================================
 static unsigned long lastSensorRead = 0;
 static unsigned long lastNetworkSend = 0;
+
 // ========================================
 // FORWARD DECLARATIONS
 // ========================================
-float getLiters();
+
 void  loadcellSetup();
+float getLiters();
 
 void  hydrationSetup();
 void  updateHydration(float currentReading);
 float getDailyConsumption();
 
 void  reminderSetup();
-void  checkReminder();
+bool  checkReminder();           // now returns bool
+void  setGoalML(int ml);
+void  applyReminderSettings(int intervalMinutes, bool enabled);
 extern float goalML;
 
 void  connectWiFi();
 void  maintainWiFi();
-bool  sendHydrationData(int userId,
-                        float currentWeightG,
-                        float waterRemainingML,
-                        float consumedTodayML,
-                        float goalML,
-                        bool  reminderActive);
+bool  sendHydrationData(int userId, float currentWeightG, float consumedTodayML);
+bool  sendReminderEvent(int userId, const char* reminderType);
+int   fetchGoalML();
+bool  fetchReminderSettings(int& intervalMinutes, bool& enabled);
 
 void setup() {
     Serial.begin(115200);
@@ -60,25 +55,39 @@ void setup() {
     Serial.println(" H2Go Smart Bottle – Booting");
     Serial.println("========================================");
 
-    loadcellSetup();   // includes EEPROM init, tare, calibration
-    hydrationSetup();  // captures baseline reading
-    reminderSetup();   // configures buzzer pin
-    connectWiFi();     // network last, hardware must be ready first
+    loadcellSetup();
+    hydrationSetup();
+    reminderSetup();
+    connectWiFi();
+
+    // Fetch goal and reminder settings from the API.
+    // If the network is unavailable at boot, the fallback defaults
+    // defined in reminder.ino remain active.
+    int fetchedGoal = fetchGoalML();
+    if (fetchedGoal > 0) {
+        setGoalML(fetchedGoal);
+    }
+
+    int  intervalMin = 30;
+    bool enabled     = true;
+    if (fetchReminderSettings(intervalMin, enabled)) {
+        applyReminderSettings(intervalMin, enabled);
+    }
 
     Serial.println("[MAIN] Boot complete.");
 }
 
 void loop() {
     unsigned long now = millis();
-    // WiFi watchdog – non-blocking reconnect
+
     maintainWiFi();
+
     // Sensor read and hydration update
     if (now - lastSensorRead >= SENSOR_INTERVAL) {
         lastSensorRead = now;
 
         float liters         = getLiters();
         float currentWeightG = liters * 1000.0;
-
         updateHydration(liters);
 
         Serial.print("[MAIN] Weight: ");
@@ -87,25 +96,20 @@ void loop() {
         Serial.print(getDailyConsumption(), 1);
         Serial.println(" ml");
     }
-    // Reminder check – interval gate is inside checkReminder()
-    checkReminder();
-    // Network send
+
+    // Reminder check – if it fires, log the event to the backend
+    if (checkReminder()) {
+        sendReminderEvent(USER_ID, "interval");
+    }
+
+    // Network send of hydration reading
     if (now - lastNetworkSend >= SEND_INTERVAL) {
         lastNetworkSend = now;
 
         float consumedML     = getDailyConsumption();
         float currentWeightG = getLiters() * 1000.0;
-        float remainingML    = goalML - consumedML;
-        if (remainingML < 0.0) remainingML = 0.0;
-        bool reminderActive = (consumedML < goalML);
-        bool ok = sendHydrationData(
-            USER_ID,
-            currentWeightG,
-            remainingML,
-            consumedML,
-            goalML,
-            reminderActive
-        );
-        Serial.println(ok ? "[MAIN] Data sent." : "[MAIN] Send failed – will retry.");
+
+        bool ok = sendHydrationData(USER_ID, currentWeightG, consumedML);
+        Serial.println(ok ? "[MAIN] Data sent." : "[MAIN] Send failed.");
     }
 }
