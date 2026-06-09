@@ -16,8 +16,9 @@ public class DashboardController : ControllerBase
         _context = context;
     }
     [HttpGet]
-    public IActionResult GetDashboard()
+    public async Task<IActionResult> GetDashboard()
     {
-        return Ok("Dashboard is working!");
+        var goal = await _context.HydrationGoals.FirstOrDefaultAsync();
+        return Ok(goal);
     }
 }

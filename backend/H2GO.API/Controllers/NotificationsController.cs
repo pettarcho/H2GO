@@ -16,8 +16,10 @@ public class NotificationsController : ControllerBase
         _context = context;
     }
     [HttpGet]
-    public IActionResult GetNotifications()
+    public async Task<IActionResult> GetNotifications()
     {
-        return Ok("Notifications is working!");
+        var readings = await _context.ReminderHistories
+            .ToListAsync();
+        return Ok(readings);
     }
 }

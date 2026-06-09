@@ -16,8 +16,13 @@ public class AnalyticsController : ControllerBase
         _context = context;
     }
     [HttpGet]
-    public IActionResult GetWeeklyAnalytics()
+    public async Task<IActionResult> GetWeeklyAnalytics()
     {
-        return Ok("Weekly analytics is working!");
+        var sevenDaysAgo = DateTime.Now.AddDays(-7);
+
+        var readings = await _context.Hydrationreadings
+            .Where(r => r.Timestamp >= sevenDaysAgo)
+            .ToListAsync();
+        return Ok(readings);
     }
 }
