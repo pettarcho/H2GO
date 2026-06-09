@@ -10,7 +10,7 @@ Responsibilities:
       loadcell   → raw weight reading
       hydration  → consumption tracking and daily reset
       reminder   → buzzer and goal logic
-      network    → WiFi and HTTP POST
+      network    → WiFi and HTTP POST/GET
 ========================================
 */
 #include <Arduino.h>
