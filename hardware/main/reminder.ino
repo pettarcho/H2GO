@@ -1,6 +1,6 @@
 // reminder.ino
 
-#define BUZZER_PIN 27
+#include "config.h"
 
 unsigned long lastReminderTime = 0;
 

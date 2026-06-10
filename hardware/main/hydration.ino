@@ -1,5 +1,7 @@
 // hydration.ino
 
+#include "config.h"
+
 float lastReading = 0.0;
 float dailyConsumption = 0.0;
 unsigned long lastMidnightCheck = 0;

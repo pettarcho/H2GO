@@ -2,14 +2,7 @@
 // OLED display module for H2Go – 128x32 SSD1306 via I2C
 // Default I2C pins on ESP32: SDA = GPIO 21, SCL = GPIO 22
 
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-
-#define OLED_WIDTH   128
-#define OLED_HEIGHT   32
-#define OLED_RESET    -1   // shared reset with ESP32; -1 disables it
-#define OLED_ADDRESS 0x3C  // most common I2C address for 128x32 modules
+#include "config.h"
 
 static Adafruit_SSD1306 display(OLED_WIDTH, OLED_HEIGHT, &Wire, OLED_RESET);
 

@@ -1,3 +1,6 @@
+#include <HX711.h>
+
+
 /*
 ========================================
 MAIN MODULE
@@ -13,12 +16,7 @@ Responsibilities:
       network    → WiFi and HTTP POST/GET
 ========================================
 */
-#include <Arduino.h>
-
-static const int USER_ID = 1;
-
-static const unsigned long SENSOR_INTERVAL = 2000UL;
-static const unsigned long SEND_INTERVAL   = 60000UL;
+#include "config.h"
 
 static unsigned long lastSensorRead = 0;
 static unsigned long lastNetworkSend = 0;

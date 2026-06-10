@@ -1,8 +1,5 @@
-#include "HX711.h"
-#include <EEPROM.h>
+#include "config.h"
 
-#define DT 18
-#define SCK 19
 #define EEPROM_SIZE 4
 #define EEPROM_ADDR 0
 
@@ -21,7 +18,7 @@ float loadCalibration() {
 }
 void loadcellSetup() {
     EEPROM.begin(EEPROM_SIZE);
-    scale.begin(DT, SCK);
+    scale.begin(LOADCELL_DT, LOADCELL_SCK);
 
     float saved_factor = loadCalibration();
 

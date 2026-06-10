@@ -4,24 +4,8 @@ NETWORK MODULE
 H2Go Smart Water Bottle – Base Station
 ========================================
 */
-#include <WiFi.h>
-#include <HTTPClient.h>
-#include <ArduinoJson.h>
+#include "config.h"
 
-// ========================================
-// CONFIGURATION
-// ========================================
-const char* WIFI_SSID     = "";
-const char* WIFI_PASSWORD = "";
-
-// Base URL of the backend API
-const char* API_BASE_URL  = "https://your-backend-url/api";
-
-// Device key registered in the DeviceKeys table.
-// Must match exactly the device_key value stored in the database.
-const char* DEVICE_KEY    = "YOUR_DEVICE_KEY_HERE";
-
-static const unsigned long WIFI_RETRY_INTERVAL = 30000UL;
 static unsigned long lastWifiRetry = 0;
 
 // ========================================
