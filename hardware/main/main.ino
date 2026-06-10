@@ -47,6 +47,12 @@ bool  sendReminderEvent(int userId, const char* reminderType);
 int   fetchGoalML();
 bool  fetchReminderSettings(int& intervalMinutes, bool& enabled);
 
+void interfaceSetup();
+void showStatusScreen(float consumedML, float currentWeightG);
+void showWifiStatus(bool connected);
+void showReminderScreen();
+void interfaceUpdate();
+
 void setup() {
     Serial.begin(115200);
     delay(500);
@@ -58,7 +64,9 @@ void setup() {
     loadcellSetup();
     hydrationSetup();
     reminderSetup();
+    interfaceSetup();
     connectWiFi();
+    showWifiStatus(isNetworkConnected());
 
     // Fetch goal and reminder settings from the API.
     // If the network is unavailable at boot, the fallback defaults
@@ -81,6 +89,7 @@ void loop() {
     unsigned long now = millis();
 
     maintainWiFi();
+    interfaceUpdate();
 
     // Sensor read and hydration update
     if (now - lastSensorRead >= SENSOR_INTERVAL) {
@@ -89,6 +98,7 @@ void loop() {
         float liters         = getLiters();
         float currentWeightG = liters * 1000.0;
         updateHydration(liters);
+        showStatusScreen(getDailyConsumption(), getLiters() * 1000.0);
 
         Serial.print("[MAIN] Weight: ");
         Serial.print(currentWeightG, 1);
@@ -100,6 +110,7 @@ void loop() {
     // Reminder check – if it fires, log the event to the backend
     if (checkReminder()) {
         sendReminderEvent(USER_ID, "interval");
+        showReminderScreen();
     }
 
     // Network send of hydration reading
