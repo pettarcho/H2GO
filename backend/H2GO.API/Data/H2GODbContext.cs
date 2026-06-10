@@ -12,8 +12,8 @@ public class H2GODbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<HydrationGoal> HydrationGoals { get; set; }
-    public DbSet<DeviceKey> DevieKeys { get; set; }
-    public DbSet<HydrationReading> Hydrationreadings { get; set; }
+    public DbSet<DeviceKey> DeviceKeys { get; set; }
+    public DbSet<HydrationReading> HydrationReadings { get; set; }
     public DbSet<ReminderSetting> ReminderSettings { get; set; }
     public DbSet<ReminderHistory> ReminderHistories { get; set; }
     public DbSet<SecurityLog> SecurityLogs { get; set; }

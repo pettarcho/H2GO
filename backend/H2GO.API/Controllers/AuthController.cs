@@ -1,4 +1,5 @@
 using H2GO.API.Data;
+using H2GO.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,15 +16,47 @@ public class AuthController : ControllerBase
     {
         _context = context;
     }
+
+    // Register Method!
     [HttpPost("register")]
-    public IActionResult Register()
+    public async Task<IActionResult> Register(RegisterRequest request)
     {
-        return Ok("Register is working!");
+        var existingUser = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == request.Email);
+
+
+        if (existingUser != null)
+            return BadRequest("Email already exists.");
+
+        var user = new User
+        {
+            Email = request.Email,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+            Role = "user",
+            CreatedAt = DateTime.Now
+        };
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        return Ok("User registered successfully!");
     }
 
+    // Login Method!
     [HttpPost("login")]
-    public IActionResult Login()
+    public async Task<IActionResult> Login(LoginRequest request)
     {
-        return Ok("Login is working!");
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == request.Email);
+
+        if (user == null)
+            return BadRequest("Invalid email or password.");
+
+        var passwordMatch = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+
+        if (!passwordMatch)
+            return BadRequest("Invalid email or password.");
+        else
+            return Ok("Login successful!");            
     }
 }
