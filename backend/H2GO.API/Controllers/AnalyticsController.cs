@@ -20,7 +20,7 @@ public class AnalyticsController : ControllerBase
     {
         var sevenDaysAgo = DateTime.Now.AddDays(-7);
 
-        var readings = await _context.Hydrationreadings
+        var readings = await _context.HydrationReadings
             .Where(r => r.Timestamp >= sevenDaysAgo)
             .ToListAsync();
         return Ok(readings);

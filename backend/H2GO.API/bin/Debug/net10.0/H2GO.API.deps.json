@@ -8,16 +8,26 @@
     ".NETCoreApp,Version=v10.0": {
       "H2GO.API/1.0.0": {
         "dependencies": {
+          "BCrypt.Net-Next": "4.2.0",
           "Microsoft.AspNetCore.OpenApi": "10.0.8",
-          "Pomelo.EntityFrameworkCore.MySql": "9.0.0"
+          "Pomelo.EntityFrameworkCore.MySql": "9.0.0",
+          "Swashbuckle.AspNetCore": "10.2.1"
         },
         "runtime": {
           "H2GO.API.dll": {}
         }
       },
+      "BCrypt.Net-Next/4.2.0": {
+        "runtime": {
+          "lib/net10.0/BCrypt-Net-Next.dll": {
+            "assemblyVersion": "4.2.0.0",
+            "fileVersion": "4.2.0.0"
+          }
+        }
+      },
       "Microsoft.AspNetCore.OpenApi/10.0.8": {
         "dependencies": {
-          "Microsoft.OpenApi": "2.0.0"
+          "Microsoft.OpenApi": "2.7.5"
         },
         "runtime": {
           "lib/net10.0/Microsoft.AspNetCore.OpenApi.dll": {
@@ -56,11 +66,11 @@
           }
         }
       },
-      "Microsoft.OpenApi/2.0.0": {
+      "Microsoft.OpenApi/2.7.5": {
         "runtime": {
           "lib/net8.0/Microsoft.OpenApi.dll": {
-            "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.0.0.0"
+            "assemblyVersion": "2.7.5.0",
+            "fileVersion": "2.7.5.0"
           }
         }
       },
@@ -83,6 +93,43 @@
             "fileVersion": "9.0.0.0"
           }
         }
+      },
+      "Swashbuckle.AspNetCore/10.2.1": {
+        "dependencies": {
+          "Swashbuckle.AspNetCore.Swagger": "10.2.1",
+          "Swashbuckle.AspNetCore.SwaggerGen": "10.2.1",
+          "Swashbuckle.AspNetCore.SwaggerUI": "10.2.1"
+        }
+      },
+      "Swashbuckle.AspNetCore.Swagger/10.2.1": {
+        "dependencies": {
+          "Microsoft.OpenApi": "2.7.5"
+        },
+        "runtime": {
+          "lib/net10.0/Swashbuckle.AspNetCore.Swagger.dll": {
+            "assemblyVersion": "10.2.1.0",
+            "fileVersion": "10.2.1.2634"
+          }
+        }
+      },
+      "Swashbuckle.AspNetCore.SwaggerGen/10.2.1": {
+        "dependencies": {
+          "Swashbuckle.AspNetCore.Swagger": "10.2.1"
+        },
+        "runtime": {
+          "lib/net10.0/Swashbuckle.AspNetCore.SwaggerGen.dll": {
+            "assemblyVersion": "10.2.1.0",
+            "fileVersion": "10.2.1.2634"
+          }
+        }
+      },
+      "Swashbuckle.AspNetCore.SwaggerUI/10.2.1": {
+        "runtime": {
+          "lib/net10.0/Swashbuckle.AspNetCore.SwaggerUI.dll": {
+            "assemblyVersion": "10.2.1.0",
+            "fileVersion": "10.2.1.2634"
+          }
+        }
       }
     }
   },
@@ -91,6 +138,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "BCrypt.Net-Next/4.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gwLD2KfCuwQesP17aVh4h6lpiMPEVt5Lbpndo0ej903hNUUTtyxt3ARdDjmuydBRTAUICc7OVKVbaOvc6SQYXA==",
+      "path": "bcrypt.net-next/4.2.0",
+      "hashPath": "bcrypt.net-next.4.2.0.nupkg.sha512"
     },
     "Microsoft.AspNetCore.OpenApi/10.0.8": {
       "type": "package",
@@ -120,12 +174,12 @@
       "path": "microsoft.entityframeworkcore.relational/9.0.0",
       "hashPath": "microsoft.entityframeworkcore.relational.9.0.0.nupkg.sha512"
     },
-    "Microsoft.OpenApi/2.0.0": {
+    "Microsoft.OpenApi/2.7.5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-GGYLfzV/G/ct80OZ45JxnWP7NvMX1BCugn/lX7TH5o0lcVaviavsLMTxmFV2AybXWjbi3h6FF1vgZiTK6PXndw==",
-      "path": "microsoft.openapi/2.0.0",
-      "hashPath": "microsoft.openapi.2.0.0.nupkg.sha512"
+      "sha512": "sha512-0FA67RSnRM4tcBKqiqVu/HPdZ9+QOKbmeRjxRUGTCjPU4C0bmUhd97Dso7Yild5P7nOV6GxJ2xrK0Kv/O9xp0w==",
+      "path": "microsoft.openapi/2.7.5",
+      "hashPath": "microsoft.openapi.2.7.5.nupkg.sha512"
     },
     "MySqlConnector/2.4.0": {
       "type": "package",
@@ -140,6 +194,34 @@
       "sha512": "sha512-cl7S4s6CbJno0LjNxrBHNc2xxmCliR5i40ATPZk/eTywVaAbHCbdc9vbGc3QThvwGjHqrDHT8vY9m1VF/47o0g==",
       "path": "pomelo.entityframeworkcore.mysql/9.0.0",
       "hashPath": "pomelo.entityframeworkcore.mysql.9.0.0.nupkg.sha512"
+    },
+    "Swashbuckle.AspNetCore/10.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SDU6akgCV/H4jFMRfyJ0mgO5jWOuuAqekvEThXg8c/LjnfNz5Nkaz+RUpeTVJKWIRX4wDKC/6R3ogJ4AsRE32A==",
+      "path": "swashbuckle.aspnetcore/10.2.1",
+      "hashPath": "swashbuckle.aspnetcore.10.2.1.nupkg.sha512"
+    },
+    "Swashbuckle.AspNetCore.Swagger/10.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ej4inPhiWCq+0utG8yaKhIhE8M3k3R/qRaGhpgDZB+O/s+o62/zRMO1Cn2CtQccsrqPE9PYnzCp6hQGYGpJOyQ==",
+      "path": "swashbuckle.aspnetcore.swagger/10.2.1",
+      "hashPath": "swashbuckle.aspnetcore.swagger.10.2.1.nupkg.sha512"
+    },
+    "Swashbuckle.AspNetCore.SwaggerGen/10.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JYX6i/y0xEtQWH/hZyfcage1/ldwww83ueD/gBc34uSnMwyvRLUsOpYcxlliFFxFbZMrY6t+R9ENqolE7zTEOg==",
+      "path": "swashbuckle.aspnetcore.swaggergen/10.2.1",
+      "hashPath": "swashbuckle.aspnetcore.swaggergen.10.2.1.nupkg.sha512"
+    },
+    "Swashbuckle.AspNetCore.SwaggerUI/10.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vzB8ZAGqXus3fdareJ9GHctaRP9ZL+wW9x8U7s1Y+BWprInFvSg6rpD9VhANNpwXA8fUHqu5Agjl/+hHG1BCQA==",
+      "path": "swashbuckle.aspnetcore.swaggerui/10.2.1",
+      "hashPath": "swashbuckle.aspnetcore.swaggerui.10.2.1.nupkg.sha512"
     }
   }
 }
