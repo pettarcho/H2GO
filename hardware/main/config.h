@@ -1,6 +1,5 @@
 // config.h
 // Central include and configuration file for H2Go firmware.
-// Include this at the top of every .ino file.
 
 #ifndef CONFIG_H
 #define CONFIG_H
@@ -18,10 +17,10 @@
 // ----------------------------------------
 // Network credentials and endpoints
 // ----------------------------------------
-const char* WIFI_SSID     = "yailin";
-const char* WIFI_PASSWORD = "deez1313";
-const char* API_BASE_URL  = "http://172.20.10.2:3000/api/readings";
-const char* DEVICE_KEY    = "h2go-esp32-live-a7f3k9x2m4n8q1w5";
+const char* WIFI_SSID     = "Xiaomi 15";
+const char* WIFI_PASSWORD = "Kalo2005";
+const char* API_BASE_URL  = "http://10.184.248.211:5285/api";
+const char* DEVICE_KEY    = "h2go-key-a1b2c3d4e5f6g7h8i9j0";
 
 // ----------------------------------------
 // Pin definitions
