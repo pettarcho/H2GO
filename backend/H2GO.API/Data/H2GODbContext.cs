@@ -92,7 +92,7 @@ public class H2GODbContext : DbContext
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.TriggeredAt).HasColumnName("triggered_at");
             entity.Property(e => e.Acknowledged).HasColumnName("acknowledged");
-            entity.Property(e => e.AcknowledgedAt).HasColumnName("acknowledged_at");
+            entity.Property(e => e.AcknowledgedAt).HasColumnName("acknowledged_at").IsRequired(false);
             entity.Property(e => e.ReminderType).HasColumnName("reminder_type");
         });
 

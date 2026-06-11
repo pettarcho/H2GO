@@ -29,10 +29,9 @@ public class ReminderEventController : ControllerBase
 
         var reminder = new ReminderHistory
         {
-            UserId = request.UserId,
+            UserId = device.UserId,
             TriggeredAt = DateTime.Now,
             Acknowledged = false,
-            AcknowledgedAt = null,
             ReminderType = request.ReminderType,
         };
 
