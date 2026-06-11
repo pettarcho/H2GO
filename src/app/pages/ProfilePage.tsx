@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import {
   Target,
   Smartphone,
@@ -198,7 +198,10 @@ export default function ProfilePage() {
             <span>Firmware v2.1.4</span>
           </div>
 
-          <button className="w-full mt-4 bg-[#FFF5F5] text-[#ef4444] py-3 rounded-2xl text-sm font-semibold hover:bg-[#fee2e2] transition-colors border border-[#fecaca] flex items-center justify-center gap-2">
+          <button
+            type="button"
+            className="w-full mt-4 bg-[#FFF5F5] text-[#ef4444] py-3 rounded-2xl text-sm font-semibold hover:bg-[#fee2e2] transition-colors border border-[#fecaca] flex items-center justify-center gap-2"
+          >
             <Trash2 className="w-4 h-4" />
             Disconnect Bottle
           </button>
