@@ -8,7 +8,6 @@ import {
   LogOut,
   Check,
   Trash2,
-  Droplets,
 } from "lucide-react";
 
 const REMINDER_OPTIONS = [
@@ -20,7 +19,6 @@ const REMINDER_OPTIONS = [
 export default function ProfilePage() {
   const navigate = useNavigate();
   const [dailyGoal, setDailyGoal] = useState(3.0);
-  const [waterGoalMl, setWaterGoalMl] = useState(2000);
   const [reminderFreq, setReminderFreq] = useState(2);
   const [saved, setSaved] = useState(false);
 
@@ -109,51 +107,6 @@ export default function ProfilePage() {
                 </button>
               ))}
             </div>
-          </div>
-        </div>
-
-        {/* Daily Water Goal */}
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#e2e8f0]">
-          <div className="flex items-center gap-2 mb-5">
-            <Droplets className="w-5 h-5 text-[#0099FF]" />
-            <h2 className="font-bold text-[#1e293b]">Daily Water Goal</h2>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2.5">
-            {[1000, 2000, 3000].map((ml) => {
-              const isSelected = waterGoalMl === ml;
-              return (
-                <button
-                  key={ml}
-                  onClick={() => setWaterGoalMl(ml)}
-                  className={`flex flex-col items-center py-4 px-2 rounded-2xl border-2 transition-all ${
-                    isSelected
-                      ? "bg-[#0099FF] border-[#0099FF] shadow-lg shadow-[#0099FF]/25"
-                      : "bg-[#F8FAFC] border-[#e2e8f0] hover:border-[#0099FF]/40"
-                  }`}
-                >
-                  <span
-                    className={`text-xl font-bold leading-none mb-1 ${
-                      isSelected ? "text-white" : "text-[#1e293b]"
-                    }`}
-                  >
-                    {(ml / 1000).toFixed(0)}L
-                  </span>
-                  <span
-                    className={`text-xs font-medium ${
-                      isSelected ? "text-white/80" : "text-[#94a3b8]"
-                    }`}
-                  >
-                    {ml} mL
-                  </span>
-                  {isSelected && (
-                    <div className="mt-2 w-5 h-5 bg-white/25 rounded-full flex items-center justify-center">
-                      <Check className="w-3 h-3 text-white" />
-                    </div>
-                  )}
-                </button>
-              );
-            })}
           </div>
         </div>
 

@@ -64,14 +64,6 @@ export default function LoginPage() {
             >
               Sign In
             </button>
-
-            <button
-              type="button"
-              onClick={() => navigate("/dashboard")}
-              className="w-full bg-white text-[#0099FF] py-4 rounded-2xl font-semibold border-2 border-[#0099FF] hover:bg-[#EFF8FF] transition-all"
-            >
-              Sign Up
-            </button>
           </form>
         </div>
 
