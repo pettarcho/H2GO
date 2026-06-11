@@ -1,11 +1,35 @@
+# H2GO Frontend
 
-  # H2GO Smart Water Bottle App
+Clean React/Vite frontend for the H2GO smart bottle app.
 
-  This is a code bundle for H2GO Smart Water Bottle App. The original project is available at https://www.figma.com/design/rTVUI9p1b7NNKrb1uWtSJV/H2GO-Smart-Water-Bottle-App.
+## Screens
 
-  ## Running the code
+- `/` - Login
+- `/dashboard` - Hydration dashboard
+- `/profile` - User preferences and connected bottle
 
-  Run `npm i` to install the dependencies.
+## Run
 
-  Run `npm run dev` to start the development server.
-  
+```bash
+npm install
+npm run dev
+```
+
+Open the Vite URL, usually:
+
+```text
+http://localhost:5173
+```
+
+## Build
+
+```bash
+npm run build
+```
+
+## Backend handoff notes
+
+- Login currently redirects to `/dashboard` after submit.
+- Connect the login API in `src/app/pages/LoginPage.tsx`.
+- Dashboard currently uses local sample data in `src/app/pages/DashboardPage.tsx`.
+- Profile settings are local UI state in `src/app/pages/ProfilePage.tsx`.
