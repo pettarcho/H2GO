@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Battery, CheckCircle2, Clock, Target, TrendingUp, Wifi } from "lucide-react";
+import {
+  Bell,
+  CheckCircle2,
+  Clock,
+  FlaskConical,
+  Smartphone,
+  Target,
+  TrendingUp,
+  Wifi,
+} from "lucide-react";
 import CircularProgress from "../components/CircularProgress";
 
 const weeklyData = [
@@ -11,6 +20,27 @@ const weeklyData = [
   { day: "Fri", amount: 3.0, goal: 3 },
   { day: "Sat", amount: 2.2, goal: 3 },
   { day: "Sun", amount: 1.8, goal: 3 },
+];
+
+const notifications = [
+  {
+    id: 1,
+    icon: Clock,
+    color: "#0099FF",
+    bg: "#EFF8FF",
+    title: "Hydration Reminder",
+    message: "Time to drink water - 2 hours since last intake",
+    time: "5m ago",
+  },
+  {
+    id: 2,
+    icon: CheckCircle2,
+    color: "#34C759",
+    bg: "#F0FDF4",
+    title: "Goal Achieved",
+    message: "You hit your daily goal yesterday - great work!",
+    time: "1h ago",
+  },
 ];
 
 export default function DashboardPage() {
@@ -108,28 +138,29 @@ export default function DashboardPage() {
 
         <section className="rounded-3xl border border-[#e2e8f0] bg-white p-6 shadow-sm">
           <div className="mb-4 flex items-center gap-2">
-            <Battery className="h-5 w-5 text-[#0099FF]" />
+            <Smartphone className="h-5 w-5 text-[#0099FF]" />
             <h3 className="text-base font-bold text-[#1e293b]">Bottle Status</h3>
             <div className="ml-auto flex items-center gap-1.5">
               <div className="h-2 w-2 rounded-full bg-[#34C759]" />
               <span className="text-xs font-semibold text-[#34C759]">Connected</span>
             </div>
           </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-[#64748b]">Battery</span>
-              <span className="text-sm font-bold text-[#1e293b]">85%</span>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-2xl bg-[#F8FAFC] p-3">
+              <p className="mb-1 text-xs text-[#94a3b8]">Model</p>
+              <p className="font-bold text-[#1e293b]">H2GO Pro 750</p>
             </div>
-            <div className="h-2.5 w-full rounded-full bg-[#f1f5f9]">
-              <div className="h-2.5 rounded-full bg-[#34C759]" style={{ width: "85%" }} />
+            <div className="rounded-2xl bg-[#F8FAFC] p-3">
+              <p className="mb-1 text-xs text-[#94a3b8]">Connection</p>
+              <p className="font-bold text-[#34C759]">Online</p>
             </div>
-            <div className="flex items-center justify-between pt-1">
-              <div className="flex items-center gap-1.5">
-                <Wifi className="h-4 w-4 text-[#94a3b8]" />
-                <span className="text-xs text-[#94a3b8]">Last sync</span>
-              </div>
-              <span className="text-xs font-semibold text-[#64748b]">2 min ago</span>
+          </div>
+          <div className="mt-4 flex items-center justify-between px-1">
+            <div className="flex items-center gap-1.5">
+              <Wifi className="h-4 w-4 text-[#94a3b8]" />
+              <span className="text-xs text-[#94a3b8]">Last sync</span>
             </div>
+            <span className="text-xs font-semibold text-[#64748b]">2 min ago</span>
           </div>
         </section>
 
@@ -177,9 +208,85 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="rounded-2xl bg-[#F8FAFC] p-3">
-              <p className="mb-1 text-xs text-[#94a3b8]">Bottle model</p>
-              <p className="font-bold text-[#1e293b]">H2GO Pro 750</p>
+              <p className="mb-1 text-xs text-[#94a3b8]">Today</p>
+              <p className="font-bold text-[#0099FF]">{currentIntake.toFixed(1)}L</p>
             </div>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-[#e2e8f0] bg-white p-6 shadow-sm">
+          <div className="mb-5 flex items-center gap-2">
+            <FlaskConical className="h-5 w-5 text-[#0099FF]" />
+            <h3 className="text-base font-bold text-[#1e293b]">Water Quality</h3>
+            <span className="ml-auto rounded-full border border-[#bbf7d0] bg-[#F0FDF4] px-3 py-1 text-xs font-bold text-[#34C759]">
+              Excellent
+            </span>
+          </div>
+          <div className="mb-5 flex items-center gap-5">
+            <div className="flex h-20 w-20 flex-col items-center justify-center rounded-3xl border border-[#0099FF]/15 bg-gradient-to-br from-[#0099FF]/10 to-[#0099FF]/5">
+              <p className="text-2xl font-bold leading-none text-[#0099FF]">120</p>
+              <p className="mt-0.5 text-xs font-medium text-[#0099FF]/70">ppm</p>
+            </div>
+            <div className="flex-1 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[#64748b]">TDS Value</span>
+                <span className="text-sm font-bold text-[#1e293b]">120 ppm</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[#64748b]">Safe to Drink</span>
+                <span className="text-sm font-bold text-[#34C759]">Yes</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[#64748b]">TDS Range</span>
+                <span className="text-sm font-semibold text-[#1e293b]">0-150 ppm</span>
+              </div>
+            </div>
+          </div>
+          <div className="relative">
+            <div className="h-2 w-full rounded-full bg-gradient-to-r from-[#34C759] via-[#FF9500] to-[#ef4444] opacity-60" />
+            <div
+              className="absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full border-2 border-[#0099FF] bg-white shadow-sm"
+              style={{ left: `${(120 / 500) * 100}%` }}
+            />
+          </div>
+          <div className="mt-1 flex justify-between">
+            <span className="text-xs text-[#94a3b8]">0</span>
+            <span className="text-xs text-[#94a3b8]">250</span>
+            <span className="text-xs text-[#94a3b8]">500+ ppm</span>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-[#e2e8f0] bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center gap-2">
+            <Bell className="h-5 w-5 text-[#0099FF]" />
+            <h3 className="text-base font-bold text-[#1e293b]">Recent Notifications</h3>
+          </div>
+          <div className="space-y-3">
+            {notifications.map((notification) => {
+              const Icon = notification.icon;
+
+              return (
+                <div
+                  key={notification.id}
+                  className="flex items-start gap-3 rounded-2xl p-3"
+                  style={{ backgroundColor: notification.bg }}
+                >
+                  <div
+                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl"
+                    style={{ backgroundColor: `${notification.color}18` }}
+                  >
+                    <Icon className="h-4 w-4" style={{ color: notification.color }} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="truncate text-sm font-semibold text-[#1e293b]">{notification.title}</p>
+                      <span className="flex-shrink-0 text-xs text-[#94a3b8]">{notification.time}</span>
+                    </div>
+                    <p className="mt-0.5 text-xs leading-relaxed text-[#64748b]">{notification.message}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
 

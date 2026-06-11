@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import {
   Target,
   Smartphone,
-  Battery,
   Wifi,
   LogOut,
   Check,
@@ -181,10 +180,10 @@ export default function ProfilePage() {
                 <p className="font-semibold text-sm">HG-2026-7850</p>
               </div>
               <div>
-                <p className="text-white/60 text-xs mb-0.5">Battery</p>
+                <p className="text-white/60 text-xs mb-0.5">Status</p>
                 <div className="flex items-center gap-1.5">
-                  <Battery className="w-3.5 h-3.5" />
-                  <p className="font-semibold text-sm">85%</p>
+                  <div className="h-2 w-2 rounded-full bg-[#34C759]" />
+                  <p className="font-semibold text-sm">Online</p>
                 </div>
               </div>
             </div>

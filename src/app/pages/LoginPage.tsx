@@ -6,8 +6,9 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [mode, setMode] = useState<"login" | "signup">("login");
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     navigate("/dashboard");
   };
@@ -24,10 +25,35 @@ export default function LoginPage() {
         </div>
 
         <div className="bg-white rounded-3xl shadow-sm p-8 border border-[#dbe3ef]">
-          <h2 className="text-2xl font-bold text-[#1e293b] mb-1">Welcome back</h2>
-          <p className="text-[#64748b] text-sm mb-7">Sign in to your account</p>
+          <div className="mb-6 grid grid-cols-2 rounded-2xl bg-[#F1F5F9] p-1">
+            <button
+              type="button"
+              onClick={() => setMode("login")}
+              className={`rounded-xl py-2.5 text-sm font-semibold transition-all ${
+                mode === "login" ? "bg-white text-[#0099FF] shadow-sm" : "text-[#64748b]"
+              }`}
+            >
+              Login
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("signup")}
+              className={`rounded-xl py-2.5 text-sm font-semibold transition-all ${
+                mode === "signup" ? "bg-white text-[#0099FF] shadow-sm" : "text-[#64748b]"
+              }`}
+            >
+              Sign Up
+            </button>
+          </div>
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <h2 className="text-2xl font-bold text-[#1e293b] mb-1">
+            {mode === "login" ? "Welcome back" : "Create account"}
+          </h2>
+          <p className="text-[#64748b] text-sm mb-7">
+            {mode === "login" ? "Sign in to your account" : "Start tracking your hydration"}
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-[#1e293b] mb-1.5">
                 Email
@@ -66,7 +92,7 @@ export default function LoginPage() {
               type="submit"
               className="w-full bg-gradient-to-r from-[#0099FF] to-[#0077dd] text-white py-4 rounded-2xl font-semibold hover:from-[#0088ee] hover:to-[#0066cc] transition-all shadow-lg shadow-[#0099FF]/25"
             >
-              Sign In
+              {mode === "login" ? "Sign In" : "Create Account"}
             </button>
           </form>
         </div>
