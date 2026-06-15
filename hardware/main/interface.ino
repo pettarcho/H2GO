@@ -149,3 +149,48 @@ void interfaceUpdate() {
         reminderScreenActive = false;
     }
 }
+
+// ========================================
+// RESET BUTTON – manual daily reset
+// ========================================
+void resetButtonSetup() {
+    pinMode(RESET_BUTTON_PIN, INPUT_PULLUP);
+}
+// Returns true on the falling edge (the moment the button is pressed),
+// with simple 50 ms debounce.
+bool resetButtonPressed() {
+    static unsigned long lastDebounceTime = 0;
+    static bool          lastRawState     = HIGH;
+    static bool          lastStableState  = HIGH;
+
+    bool currentRaw = digitalRead(RESET_BUTTON_PIN);
+
+    if (currentRaw != lastRawState) {
+        lastDebounceTime = millis();
+    }
+    lastRawState = currentRaw;
+
+    if ((millis() - lastDebounceTime) < 50UL) return false;
+
+    bool pressed = false;
+    if (currentRaw == LOW && lastStableState == HIGH) {
+        pressed = true;
+    }
+    lastStableState = currentRaw;
+    return pressed;
+}
+// Shows a confirmation message on the OLED for 1.5 seconds.
+void showResetScreen() {
+    if (!oledReady) return;
+
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(8, 4);
+    display.println("Daily reset!");
+    display.setCursor(0, 18);
+    display.println("Consumption = 0 ml");
+    display.display();
+
+    delay(1500);
+}

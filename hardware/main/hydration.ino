@@ -49,3 +49,13 @@ void updateHydration(float currentReading) {
 float getDailyConsumption() {
   return dailyConsumption;
 }
+
+// Resets the daily consumption counter and resyncs the baseline reading.
+// Call this when the bottle is swapped or for manual testing.
+// Resyncing lastReading prevents a false consumption spike on the next cycle.
+void resetDailyConsumption() {
+    dailyConsumption  = 0.0;
+    lastReading       = getLiters();
+    lastMidnightCheck = millis();
+    Serial.println("[HYDRATION] Daily consumption reset manually.");
+}

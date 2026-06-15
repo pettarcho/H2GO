@@ -51,6 +51,12 @@ void showWifiStatus(bool connected);
 void showReminderScreen();
 void interfaceUpdate();
 
+void resetButtonSetup();
+bool resetButtonPressed();
+void showResetScreen();
+void resetDailyConsumption();
+
+
 void setup() {
     Serial.begin(115200);
     delay(500);
@@ -63,6 +69,7 @@ void setup() {
     hydrationSetup();
     reminderSetup();
     interfaceSetup();
+    resetButtonSetup();
     connectWiFi();
     showWifiStatus(isNetworkConnected());
 
@@ -88,6 +95,12 @@ void loop() {
 
     maintainWiFi();
     interfaceUpdate();
+
+    // Checks reset button
+    if (resetButtonPressed()) {
+      resetDailyConsumption();
+      showResetScreen();
+    }
 
     // Sensor read and hydration update
     if (now - lastSensorRead >= SENSOR_INTERVAL) {

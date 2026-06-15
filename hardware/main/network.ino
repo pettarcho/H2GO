@@ -52,6 +52,7 @@ bool isNetworkConnected() {
 // The API validates this key against the DeviceKeys table before
 // accepting any data or returning any configuration.
 void attachDeviceKey(HTTPClient& http) {
+    http.setTimeout(15000); 
     http.addHeader("Content-Type", "application/json");
     http.addHeader("X-Device-Key", DEVICE_KEY);
 }
@@ -149,10 +150,9 @@ String createHydrationPayload(
     float consumedTodayML)
 {
     JsonDocument doc;
-    doc["user_id"]            = userId;
-    doc["weight_grams"]       = round(currentWeightG);
-    doc["water_consumed_ml"]  = round(consumedTodayML);
-    // timestamp is generated server-side at insert time
+    doc["UserId"]           = userId;
+    doc["WeightGrams"]      = round(currentWeightG);
+    doc["WaterConsumedMl"]  = round(consumedTodayML);
 
     String payload;
     serializeJson(doc, payload);
