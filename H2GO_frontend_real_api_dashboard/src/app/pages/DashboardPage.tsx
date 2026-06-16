@@ -73,6 +73,35 @@ function mapReadingsToWeeklyData(readings: HydrationReadingResponse[], dailyGoal
   }));
 }
 
+function getReadingAmountLiters(reading: HydrationReadingResponse) {
+  const rawAmount = reading.waterConsumedMl ?? reading.WaterConsumedMl ?? 0;
+  return Number(rawAmount) / 1000;
+}
+
+function getReadingDate(reading: HydrationReadingResponse) {
+  const rawTimestamp = reading.timestamp ?? reading.Timestamp;
+  return rawTimestamp ? new Date(rawTimestamp) : new Date();
+}
+
+function isSameDay(a: Date, b: Date) {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+function calculateTodayIntake(readings: HydrationReadingResponse[]) {
+  if (!Array.isArray(readings) || readings.length === 0) return 0;
+
+  const today = new Date();
+  const totalLiters = readings
+    .filter((reading) => isSameDay(getReadingDate(reading), today))
+    .reduce((total, reading) => total + getReadingAmountLiters(reading), 0);
+
+  return Number(totalLiters.toFixed(1));
+}
+
 function mapNotifications(items: NotificationResponse[]) {
   if (!Array.isArray(items) || items.length === 0) return [];
 
@@ -95,13 +124,13 @@ function mapNotifications(items: NotificationResponse[]) {
 export default function DashboardPage() {
   const navigate = useNavigate();
   const [reminderDone, setReminderDone] = useState(false);
+  const [currentIntake, setCurrentIntake] = useState(0);
   const [dailyGoal, setDailyGoal] = useState(3.0);
-  const [weeklyData, setWeeklyData] = useState(fallbackWeeklyData);
-  const [notifications, setNotifications] = useState(fallbackNotifications);
+  const [weeklyData, setWeeklyData] = useState(fallbackWeeklyData.map((day) => ({ ...day, amount: 0 })));
+  const [notifications, setNotifications] = useState<typeof fallbackNotifications>([]);
   const [apiStatus, setApiStatus] = useState<"loading" | "connected" | "offline">("loading");
 
-  const currentIntake = 1.8;
-  const completion = Math.round((currentIntake / dailyGoal) * 100);
+  const completion = dailyGoal > 0 ? Math.min(Math.round((currentIntake / dailyGoal) * 100), 100) : 0;
   const avgIntake = (weeklyData.reduce((total, day) => total + day.amount, 0) / weeklyData.length).toFixed(1);
   const bestDay = weeklyData.reduce((best, day) => (day.amount > best.amount ? day : best));
   const goalDays = weeklyData.filter((day) => day.amount >= day.goal).length;
@@ -126,23 +155,22 @@ export default function DashboardPage() {
         if (!isMounted) return;
 
         const goalMl = goal?.dailyGoalMl ?? goal?.daily_goal_ml ?? goal?.DailyGoalMl;
-        if (goalMl) {
-          setDailyGoal(goalMl / 1000);
-        }
+        const nextDailyGoal = goalMl ? goalMl / 1000 : dailyGoal;
+        setDailyGoal(nextDailyGoal);
 
-        const nextWeeklyData = mapReadingsToWeeklyData(analytics, goalMl ? goalMl / 1000 : dailyGoal);
-        if (nextWeeklyData.length) {
-          setWeeklyData(nextWeeklyData);
-        }
+        const nextWeeklyData = mapReadingsToWeeklyData(analytics, nextDailyGoal);
+        setWeeklyData(nextWeeklyData.length ? nextWeeklyData : fallbackWeeklyData.map((day) => ({ ...day, amount: 0, goal: nextDailyGoal })));
+        setCurrentIntake(calculateTodayIntake(analytics));
 
         const nextNotifications = mapNotifications(notificationItems);
-        if (nextNotifications.length) {
-          setNotifications(nextNotifications);
-        }
+        setNotifications(nextNotifications);
 
         setApiStatus("connected");
       } catch {
         if (isMounted) {
+          setCurrentIntake(1.8);
+          setWeeklyData(fallbackWeeklyData);
+          setNotifications(fallbackNotifications);
           setApiStatus("offline");
         }
       }

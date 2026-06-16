@@ -3,13 +3,13 @@
 The frontend calls the ASP.NET backend at:
 
 ```text
-http://localhost:5285/api
+http://10.184.248.211:5285/api
 ```
 
 Override it with:
 
 ```env
-VITE_API_BASE_URL=http://localhost:5285/api
+VITE_API_BASE_URL=http://10.184.248.211:5285/api
 ```
 
 ## Run backend
