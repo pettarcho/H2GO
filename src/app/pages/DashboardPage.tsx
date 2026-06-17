@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Bell,
@@ -11,8 +11,15 @@ import {
   Wifi,
 } from "lucide-react";
 import CircularProgress from "../components/CircularProgress";
+import {
+  getDashboardGoal,
+  getNotifications,
+  getWeeklyAnalytics,
+  type HydrationReadingResponse,
+  type NotificationResponse,
+} from "../api";
 
-const weeklyData = [
+const fallbackWeeklyData = [
   { day: "Mon", amount: 2.4, goal: 3 },
   { day: "Tue", amount: 3.1, goal: 3 },
   { day: "Wed", amount: 2.8, goal: 3 },
@@ -22,7 +29,7 @@ const weeklyData = [
   { day: "Sun", amount: 1.8, goal: 3 },
 ];
 
-const notifications = [
+const fallbackNotifications = [
   {
     id: 1,
     icon: Clock,
@@ -43,17 +50,138 @@ const notifications = [
   },
 ];
 
+function mapReadingsToWeeklyData(readings: HydrationReadingResponse[], dailyGoal: number) {
+  if (!Array.isArray(readings) || readings.length === 0) return [];
+
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const totals = new Map<string, number>();
+
+  readings.forEach((reading) => {
+    const rawTimestamp = reading.timestamp ?? reading.Timestamp;
+    const rawAmount = reading.waterConsumedMl ?? reading.WaterConsumedMl ?? 0;
+    const date = rawTimestamp ? new Date(rawTimestamp) : new Date();
+    const day = days[date.getDay()];
+    const liters = Number(rawAmount) / 1000;
+
+    totals.set(day, (totals.get(day) ?? 0) + liters);
+  });
+
+  return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => ({
+    day,
+    amount: Number((totals.get(day) ?? 0).toFixed(1)),
+    goal: dailyGoal,
+  }));
+}
+
+function getReadingAmountLiters(reading: HydrationReadingResponse) {
+  const rawAmount = reading.waterConsumedMl ?? reading.WaterConsumedMl ?? 0;
+  return Number(rawAmount) / 1000;
+}
+
+function getReadingDate(reading: HydrationReadingResponse) {
+  const rawTimestamp = reading.timestamp ?? reading.Timestamp;
+  return rawTimestamp ? new Date(rawTimestamp) : new Date();
+}
+
+function isSameDay(a: Date, b: Date) {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+function calculateTodayIntake(readings: HydrationReadingResponse[]) {
+  if (!Array.isArray(readings) || readings.length === 0) return 0;
+
+  const today = new Date();
+  const totalLiters = readings
+    .filter((reading) => isSameDay(getReadingDate(reading), today))
+    .reduce((total, reading) => total + getReadingAmountLiters(reading), 0);
+
+  return Number(totalLiters.toFixed(1));
+}
+
+function mapNotifications(items: NotificationResponse[]) {
+  if (!Array.isArray(items) || items.length === 0) return [];
+
+  return items.slice(0, 4).map((item, index) => {
+    const reminderType = item.reminderType ?? item.ReminderType ?? "Hydration Reminder";
+    const triggeredAt = item.triggeredAt ?? item.TriggeredAt;
+
+    return {
+      id: item.id ?? index,
+      icon: item.acknowledged ?? item.Acknowledged ? CheckCircle2 : Clock,
+      color: item.acknowledged ?? item.Acknowledged ? "#34C759" : "#0099FF",
+      bg: item.acknowledged ?? item.Acknowledged ? "#F0FDF4" : "#EFF8FF",
+      title: reminderType,
+      message: item.acknowledged ?? item.Acknowledged ? "Reminder acknowledged" : "Hydration reminder triggered",
+      time: triggeredAt ? new Date(triggeredAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Now",
+    };
+  });
+}
+
 export default function DashboardPage() {
   const navigate = useNavigate();
   const [reminderDone, setReminderDone] = useState(false);
+  const [currentIntake, setCurrentIntake] = useState(0);
+  const [dailyGoal, setDailyGoal] = useState(3.0);
+  const [weeklyData, setWeeklyData] = useState(fallbackWeeklyData.map((day) => ({ ...day, amount: 0 })));
+  const [notifications, setNotifications] = useState<typeof fallbackNotifications>([]);
+  const [apiStatus, setApiStatus] = useState<"loading" | "connected" | "offline">("loading");
 
-  const currentIntake = 1.8;
-  const dailyGoal = 3.0;
-  const completion = Math.round((currentIntake / dailyGoal) * 100);
+  const completion = dailyGoal > 0 ? Math.min(Math.round((currentIntake / dailyGoal) * 100), 100) : 0;
   const avgIntake = (weeklyData.reduce((total, day) => total + day.amount, 0) / weeklyData.length).toFixed(1);
   const bestDay = weeklyData.reduce((best, day) => (day.amount > best.amount ? day : best));
   const goalDays = weeklyData.filter((day) => day.amount >= day.goal).length;
   const maxAmount = Math.max(...weeklyData.map((day) => day.amount));
+  const backendMessage = useMemo(() => {
+    if (apiStatus === "connected") return "Connected to backend";
+    if (apiStatus === "offline") return "Backend offline - showing sample data";
+    return "Loading backend data...";
+  }, [apiStatus]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadDashboard() {
+      try {
+        const [goal, analytics, notificationItems] = await Promise.all([
+          getDashboardGoal(),
+          getWeeklyAnalytics(),
+          getNotifications(),
+        ]);
+
+        if (!isMounted) return;
+
+        const goalMl = goal?.dailyGoalMl ?? goal?.daily_goal_ml ?? goal?.DailyGoalMl;
+        const nextDailyGoal = goalMl ? goalMl / 1000 : dailyGoal;
+        setDailyGoal(nextDailyGoal);
+
+        const nextWeeklyData = mapReadingsToWeeklyData(analytics, nextDailyGoal);
+        setWeeklyData(nextWeeklyData.length ? nextWeeklyData : fallbackWeeklyData.map((day) => ({ ...day, amount: 0, goal: nextDailyGoal })));
+        setCurrentIntake(calculateTodayIntake(analytics));
+
+        const nextNotifications = mapNotifications(notificationItems);
+        setNotifications(nextNotifications);
+
+        setApiStatus("connected");
+      } catch {
+        if (isMounted) {
+          setCurrentIntake(1.8);
+          setWeeklyData(fallbackWeeklyData);
+          setNotifications(fallbackNotifications);
+          setApiStatus("offline");
+        }
+      }
+    }
+
+    loadDashboard();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#F8FAFC]">
@@ -77,6 +205,18 @@ export default function DashboardPage() {
             <Target className="h-5 w-5 text-[#64748b]" />
           </button>
         </header>
+
+        <div
+          className={`rounded-2xl border px-4 py-3 text-xs font-semibold ${
+            apiStatus === "connected"
+              ? "border-[#bbf7d0] bg-[#F0FDF4] text-[#166534]"
+              : apiStatus === "offline"
+              ? "border-[#fed7aa] bg-[#FFF7ED] text-[#c2410c]"
+              : "border-[#dbe3ef] bg-white text-[#64748b]"
+          }`}
+        >
+          {backendMessage}
+        </div>
 
         <section className="rounded-3xl border border-[#e2e8f0] bg-white p-7 shadow-sm">
           <h2 className="mb-5 text-center text-base font-bold tracking-tight text-[#1e293b]">

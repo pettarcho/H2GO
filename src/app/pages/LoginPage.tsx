@@ -1,16 +1,36 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Droplets, Lock, Mail } from "lucide-react";
+import { login, register } from "../api";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mode, setMode] = useState<"login" | "signup">("login");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate("/dashboard");
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const payload = { email, password };
+
+      if (mode === "login") {
+        await login(payload);
+      } else {
+        await register(payload);
+      }
+
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not connect to backend.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -54,6 +74,12 @@ export default function LoginPage() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <div className="rounded-2xl border border-[#fecaca] bg-[#fff5f5] px-4 py-3 text-sm font-medium text-[#ef4444]">
+                {error}
+              </div>
+            )}
+
             <div>
               <label className="block text-sm font-semibold text-[#1e293b] mb-1.5">
                 Email
@@ -90,9 +116,10 @@ export default function LoginPage() {
 
             <button
               type="submit"
+              disabled={isSubmitting}
               className="w-full bg-gradient-to-r from-[#0099FF] to-[#0077dd] text-white py-4 rounded-2xl font-semibold hover:from-[#0088ee] hover:to-[#0066cc] transition-all shadow-lg shadow-[#0099FF]/25"
             >
-              {mode === "login" ? "Sign In" : "Create Account"}
+              {isSubmitting ? "Connecting..." : mode === "login" ? "Sign In" : "Create Account"}
             </button>
           </form>
         </div>
