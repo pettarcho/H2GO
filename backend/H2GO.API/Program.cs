@@ -29,10 +29,32 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader());
 });
 
+// Prefer a connection string built from Railway's individual MySQL env vars
+// (MYSQLHOST/MYSQLPORT/MYSQLUSER/MYSQLPASSWORD/MYSQLDATABASE), falling back
+// to the "DefaultConnection" value in appsettings.json for local dev.
+var mysqlHost = builder.Configuration["MYSQLHOST"];
+string connectionString;
+
+if (!string.IsNullOrEmpty(mysqlHost))
+{
+    var mysqlPort = builder.Configuration["MYSQLPORT"] ?? "3306";
+    var mysqlUser = builder.Configuration["MYSQLUSER"];
+    var mysqlPassword = builder.Configuration["MYSQLPASSWORD"];
+    var mysqlDatabase = builder.Configuration["MYSQLDATABASE"];
+
+    connectionString =
+        $"Server={mysqlHost};Port={mysqlPort};Database={mysqlDatabase};User={mysqlUser};Password={mysqlPassword};";
+}
+else
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+        ?? throw new InvalidOperationException("No database connection configured.");
+}
+
 builder.Services.AddDbContext<H2GODbContext>(options =>
     options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+        connectionString,
+        ServerVersion.AutoDetect(connectionString)
     ));
 
 var app = builder.Build();
