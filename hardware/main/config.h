@@ -28,6 +28,7 @@ const char* DEVICE_KEY    = "h2go-key-a1b2c3d4e5f6g7h8i9j0";
 #define LOADCELL_DT   18
 #define LOADCELL_SCK  19
 #define BUZZER_PIN    27
+#define RESET_BUTTON_PIN 4
 
 // ----------------------------------------
 // OLED

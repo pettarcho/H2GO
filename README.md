@@ -29,8 +29,8 @@ npm run build
 
 ## Backend handoff notes
 
-- Login currently redirects to `/dashboard` after submit.
-- Connect the login API in `src/app/pages/LoginPage.tsx`.
-- Dashboard currently uses local sample data in `src/app/pages/DashboardPage.tsx`.
+- Login and Sign Up call the ASP.NET backend.
+- Dashboard calls backend data and falls back to sample data if the backend is offline.
 - Profile settings are local UI state in `src/app/pages/ProfilePage.tsx`.
 - Bottle status is connection-only. There is no battery percentage in the UI.
+- See `BACKEND_CONNECT.md` for run and CORS notes.
