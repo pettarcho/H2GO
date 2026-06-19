@@ -1,6 +1,12 @@
 # Backend Connection
 
-The frontend calls the ASP.NET backend at:
+**Production:**
+
+- Frontend (Vercel): https://h2-go.vercel.app
+- Backend (Railway): set `VITE_API_BASE_URL` in Vercel to your Railway domain, e.g.
+  `https://<your-railway-service>.up.railway.app/api`
+
+**Local dev**, the frontend calls the ASP.NET backend at:
 
 ```text
 http://10.184.248.211:5285/api
@@ -48,10 +54,19 @@ http://localhost:5173
 
 ## Backend requirement
 
-The ASP.NET backend must allow CORS for:
+The ASP.NET backend (`Program.cs`) only accepts requests from allowed origins, configured via the
+`AllowedOrigins` setting. Defaults include:
 
 ```text
 http://localhost:5173
+https://h2-go.vercel.app
 ```
 
-If CORS is not enabled, the browser will block frontend requests even when the backend is running.
+To add more frontend domains without redeploying code, set an env var on Railway:
+
+```text
+AllowedOrigins=https://h2-go.vercel.app,https://another-domain.com
+```
+
+If CORS is misconfigured, the browser will block frontend requests even when the backend is running and reachable.
+
