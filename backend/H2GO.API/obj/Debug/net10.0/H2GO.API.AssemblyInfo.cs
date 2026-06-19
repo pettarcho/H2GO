@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("H2GO.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c81c34299d1c2198221e602a64e8e04165e57884")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8c892e4797ecd14e5f2a8a100c44dfaf0b54d49b")]
 [assembly: System.Reflection.AssemblyProductAttribute("H2GO.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("H2GO.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
