@@ -58,6 +58,18 @@ builder.Services.AddDbContext<H2GODbContext>(options =>
     ));
 
 var app = builder.Build();
+
+// No EF Core migrations exist yet for this project. On startup, create the
+// database schema from the current models if it doesn't already exist.
+// This only acts on a completely empty database — if any tables are already
+// present (e.g. from a prior run), it's a no-op. Once you set up real EF Core
+// migrations, replace this with `db.Database.Migrate();`.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<H2GODbContext>();
+    db.Database.EnsureCreated();
+}
+
 app.UseSwagger();
 app.UseSwaggerUI();
 

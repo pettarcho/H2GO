@@ -70,3 +70,25 @@ AllowedOrigins=https://h2-go.vercel.app,https://another-domain.com
 
 If CORS is misconfigured, the browser will block frontend requests even when the backend is running and reachable.
 
+## Database
+
+The API connects to MySQL on Railway via individual env vars, set on the **API service** (not the MySQL service):
+
+```text
+MYSQLHOST=<from Railway MySQL Variables tab>
+MYSQLPORT=<from Railway MySQL Variables tab>
+MYSQLUSER=<from Railway MySQL Variables tab>
+MYSQLPASSWORD=<from Railway MySQL Variables tab>
+MYSQLDATABASE=<from Railway MySQL Variables tab>
+```
+
+If `MYSQLHOST` isn't set, the app falls back to the local `DefaultConnection` string in
+`appsettings.json` (for local dev against a local MySQL instance).
+
+**Schema:** there are no EF Core migrations yet. On startup, `Program.cs` calls
+`Database.EnsureCreated()`, which creates all tables from the current models if the database is
+completely empty. This is a no-op if any tables already exist — it does **not** apply schema
+changes to an existing database. Once the schema needs to evolve, switch to real EF Core
+migrations (`dotnet ef migrations add ...` + `Database.Migrate()`).
+
+
