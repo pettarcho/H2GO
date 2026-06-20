@@ -3,6 +3,17 @@ using H2GO.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Railway assigns a port via the PORT env var and routes its public domain
+// to it. Without this, Kestrel listens on the default/launchSettings port,
+// which Railway's proxy can't reach — the container shows as "running" but
+// every request from outside fails (looks like "Failed to fetch" in the
+// browser). Locally, PORT isn't set, so launchSettings.json still applies.
+var railwayPort = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(railwayPort))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{railwayPort}");
+}
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -75,6 +86,13 @@ app.UseSwaggerUI();
 
 app.UseCors("FrontendPolicy");
 
-app.UseHttpsRedirection();
+// Railway terminates HTTPS at its edge and forwards plain HTTP to the
+// container. Redirecting to HTTPS inside the container would point at a
+// port nothing is listening on, breaking every request. Only redirect
+// locally, where you're actually running both an http and https profile.
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.MapControllers();
 app.Run();
